@@ -1,0 +1,7 @@
+*.env
+*.log
+*.pyc
+*venv*
+**/proto/*.py
+**/proto/*.pyi
+.DS_Store

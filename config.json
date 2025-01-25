@@ -1,0 +1,9 @@
+{
+  "rules": [
+    {
+      "url": "http://my-special-awesome-pokemon-service.com",
+      "reason": "awesome pokemon",
+      "pokemon_name": "Pickachu"
+    }
+  ]
+}
