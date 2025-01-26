@@ -1,8 +1,8 @@
 import pytest
 from flask import Flask
 
+from app.exceptions import InvalidSignatureException
 from app.routes import bp
-from app.utils import InvalidSignatureException
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def client(app):
 
 
 def test_stream_invalid_signature(client, mocker):
-    mocker.patch("app.utils.validate_signature", side_effect=InvalidSignatureException)
+    mocker.patch("app.auth.validate_signature", side_effect=InvalidSignatureException)
     response = client.post("/stream", data=b"test body")
     assert response.status_code == 401
     assert response.json == {"error": "Invalid signature"}

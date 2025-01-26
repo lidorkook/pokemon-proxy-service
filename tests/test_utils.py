@@ -4,9 +4,10 @@ import hmac
 
 import pytest
 
+from app.auth import _generate_secret, validate_signature
 from app.exceptions import InvalidSignatureException, MalformedDataException
 from app.proto.pokemon_pb2 import Pokemon
-from app.utils import _generate_secret, parse_pokemon, validate_signature
+from app.utils import parse_pokemon
 
 
 def test_validate_signature_valid():

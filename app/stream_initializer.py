@@ -2,8 +2,8 @@ import asyncio
 
 import httpx
 
+from .auth import stream_secret
 from .logger import logger
-from .utils import stream_secret
 
 
 async def _call_stream_endpoint(client, endpoint, payload):
