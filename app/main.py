@@ -1,18 +1,16 @@
 import asyncio
 import logging
-import signal
 import threading
 
 from dotenv import load_dotenv
 from flask import Flask
-from pyngrok import ngrok
-from pyngrok.conf import get_default
 
 from app.stream_initializer import initialize_stream
 
 from . import settings
 from .config import load_config
 from .logger import logger
+from .ngrok import setup_tunnel
 from .routes import bp as routes_bp
 
 
@@ -21,17 +19,6 @@ def _create_app():
     app.register_blueprint(routes_bp)
 
     return app
-
-
-def _cleanup_tunnel(*args, **kwargs):
-    logger.info("shutting off")
-    ngrok.kill()
-    exit(0)
-
-
-def _handle_shutting_down():
-    signal.signal(signal.SIGINT, _cleanup_tunnel)
-    signal.signal(signal.SIGTERM, _cleanup_tunnel)
 
 
 async def start_stream(stream_url, app_url):
@@ -49,19 +36,6 @@ def run_flask_app(app):
     app.run(host="0.0.0.0", port=settings.PORT)
 
 
-def _setup_ngrok_tunnel():
-    auth_token = settings.NGROK_AUTHTOKEN
-    if not auth_token:
-        raise Exception("NGROK_AUTHTOKEN is required for local environment")
-    pyngrok_config = get_default()
-    pyngrok_config.auth_token = auth_token
-    app_url = ngrok.connect(settings.PORT, pyngrok_config=pyngrok_config).public_url
-    logger.info(f"Ngrok tunnel started at: {app_url}")
-    logger.info("Service accessible at this URL during local development.")
-    _handle_shutting_down()
-    return app_url
-
-
 def main():
     load_dotenv()
     stream_url = settings.STREAM_URL
@@ -70,7 +44,7 @@ def main():
     load_config()
 
     if settings.IS_LOCAL:
-        app_url = _setup_ngrok_tunnel()
+        app_url = setup_tunnel()
     else:
         proxy_service_url = settings.PROXY_SERVICE_URL
         if not proxy_service_url:
