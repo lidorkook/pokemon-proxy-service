@@ -73,7 +73,7 @@ def stream():
     try:
         matched_rule = get_pokemon_rule(pokemon.name)
         response = _proxy_request(pokemon, headers, matched_rule)
-        return response.content, response.status_code
+        return response.content, response.status_code, dict(response.headers)
     except KeyError:
         return _build_json_res({"error": "No matching rule found"}, 404)
 
