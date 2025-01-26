@@ -5,18 +5,9 @@ import secrets
 
 from google.protobuf.message import DecodeError
 
+from .exceptions import InvalidSignatureException, MalformedDataException
 from .logger import logger
 from .proto.pokemon_pb2 import Pokemon
-
-
-class InvalidSignatureException(Exception):
-    """Custom exception for invalid HMAC signatures."""
-
-    pass
-
-
-class MalformedDataException(Exception):
-    pass
 
 
 def validate_signature(body: bytes, secret: str, signature: str):

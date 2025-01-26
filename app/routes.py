@@ -5,16 +5,11 @@ from flask import Blueprint, jsonify, request
 from google.protobuf.json_format import MessageToJson
 
 from .config import Rule, get_pokemon_rule
+from .exceptions import InvalidSignatureException, MalformedDataException
 from .logger import logger
 from .proto.pokemon_pb2 import Pokemon
 from .stats import StatsTracker
-from .utils import (
-    InvalidSignatureException,
-    MalformedDataException,
-    parse_pokemon,
-    stream_secret,
-    validate_signature,
-)
+from .utils import parse_pokemon, stream_secret, validate_signature
 
 bp = Blueprint("routes", __name__)
 stats = StatsTracker()
