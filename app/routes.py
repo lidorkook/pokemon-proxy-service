@@ -21,11 +21,11 @@ SIGNATURE_HEADER_KEY = "X-Grd-Signature"
 
 def _proxy_request(pokemon: Pokemon, headers: dict, rule: Rule):
     start_time = time.time()
-    headers[REASON_HEADER_KEY] = rule.reason
     proxy_response = requests.post(
         rule.url,
         json=MessageToJson(pokemon, preserving_proto_field_name=True),
-        headers=headers,
+        headers={**headers, REASON_HEADER_KEY: rule.reason},
+        allow_redirects=False,
     )
     try:
         proxy_response.raise_for_status()
